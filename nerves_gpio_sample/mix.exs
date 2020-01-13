@@ -30,7 +30,8 @@ defmodule NervesGpioSample.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: {NervesGpioSample.Application, []},
+#      mod: {NervesGpioSample.Application, []},
+      mod: {NervesGpioSample, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -57,6 +58,10 @@ defmodule NervesGpioSample.MixProject do
       {:nerves_system_rpi4, "~> 1.8", runtime: false, targets: :rpi4},
       {:nerves_system_bbb, "~> 2.3", runtime: false, targets: :bbb},
       {:nerves_system_x86_64, "~> 1.8", runtime: false, targets: :x86_64},
+
+      ## add : led & gpio.
+      {:nerves_leds, "~> 0.8", targets: @all_targets},
+      {:circuits_gpio, "~> 0.4", targets: @all_targets},
     ]
   end
 
