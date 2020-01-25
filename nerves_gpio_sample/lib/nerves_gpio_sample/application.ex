@@ -33,6 +33,7 @@ defmodule NervesGpioSample.Application do
       # Children for all targets except host
       # Starts a worker by calling: NervesGpioSample.Worker.start_link(arg)
       # {NervesGpioSample.Worker, arg},
+      {NervesGpioSample.Led, []},
     ]
   end
 
