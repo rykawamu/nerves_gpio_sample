@@ -30,8 +30,7 @@ defmodule Blink7segLed.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-#      mod: {Blink7segLed.Application, []},
-      mod: {Blink7segLed, []},
+      mod: {Blink7segLed.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
