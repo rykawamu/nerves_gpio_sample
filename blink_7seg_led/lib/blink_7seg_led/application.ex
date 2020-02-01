@@ -33,6 +33,7 @@ defmodule Blink7segLed.Application do
       # Children for all targets except host
       # Starts a worker by calling: Blink7segLed.Worker.start_link(arg)
       # {Blink7segLed.Worker, arg},
+      {BlinkLed.Worker, []},
       {Blink7segLed.Worker, []},
     ]
   end

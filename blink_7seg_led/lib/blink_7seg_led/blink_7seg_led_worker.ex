@@ -1,11 +1,8 @@
 defmodule Blink7segLed.Worker do
   use GenServer
 
-  alias Nerves.Leds
   alias Circuits.GPIO
 
-  @led_on_sleep 4000
-  @led_off_sleep 1000
   @seg7_led_sleep 1000
   @digit_loop  250
 
@@ -19,40 +16,26 @@ defmodule Blink7segLed.Worker do
   end
 
   def handle_cast(:init, state) do
-    run()
+    run(:led_7seg)
+    run(:led_7seg_4degit)
     {:noreply, state}
   end
 
-  def run() do
-    led_list = Application.get_env(:blink_7seg_led, :led_list)
-    spawn(fn -> blink_list_forever(led_list) end)
-
-    ## 7seg led
+  # 7seg led
+  def run(:led_7seg) do
     gpio_no_list =
       Application.get_env(:blink_7seg_led, :gpio_no_list)
     spawn(fn -> blink_7led_forever(gpio_no_list, 0) end)
-
-    ## 4digit 7seg led
+  end
+  # 4digit 7seg led 
+  def run(:led_7seg_4degit) do
     digit_gpio_no_list =
       Application.get_env(:blink_7seg_led, :digit_gpio_no_list)
     spawn(fn -> blink_4digit_forever([], digit_gpio_no_list, 0) end)
-
-  end
-
-  defp blink_list_forever(led_list) do
-    Enum.each(led_list, &blink(&1))
-    blink_list_forever(led_list)
-  end
-
-  defp blink(led_key) do
-    Leds.set([{led_key, true}])
-    :timer.sleep(@led_on_sleep)
-    Leds.set([{led_key, false}])
-    :timer.sleep(@led_off_sleep)
   end
 
   ##########
-  # 4 digit 7 segment led
+  # 7 segment led
   ##########
 
   defp blink_7led_forever(gpio_no_list, count) do
@@ -114,7 +97,7 @@ defmodule Blink7segLed.Worker do
   end
 
   defp blink_4digit_seq(digit_gpio_no_list, count) do
-    sumlist(digit_gpio_no_list, anode_4digit_7led_blink(count),[])
+    sumlist(digit_gpio_no_list, anode_4digit_7led_blink(count), [])
     |> Enum.map(fn m -> gpio_write(m[:gpio_no], m[:val]) end)
 
     :timer.sleep(@digit_loop)
