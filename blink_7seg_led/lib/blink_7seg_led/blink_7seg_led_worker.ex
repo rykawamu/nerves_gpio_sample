@@ -27,11 +27,14 @@ defmodule Blink7segLed.Worker do
       Application.get_env(:blink_7seg_led, :gpio_no_list)
     spawn(fn -> blink_7led_forever(gpio_no_list, 0) end)
   end
+
   # 4digit 7seg led 
   def run(:led_7seg_4degit) do
     digit_gpio_no_list =
       Application.get_env(:blink_7seg_led, :digit_gpio_no_list)
-    spawn(fn -> blink_4digit_forever([], digit_gpio_no_list, 0) end)
+    func_4digit = digit_gpio_no_list |>
+                  blink_4digit_forever(0)
+    spawn(fn -> func_4digit end)
   end
 
   ##########
@@ -45,8 +48,9 @@ defmodule Blink7segLed.Worker do
   end
 
   defp blink_7led(gpio_no_list,count) do
-    sumlist(gpio_no_list, anode_7led_blink(count), [])
-    |> Enum.map(fn m -> gpio_write(m[:gpio_no], m[:val]) end)
+    gpio_no_list
+    |> sumlist(anode_7led_blink(count), [])
+    |> Enum.map(fn m -> gpio_write_map(m) end)
 
     :timer.sleep(@seg7_led_sleep)
   end
@@ -81,6 +85,9 @@ defmodule Blink7segLed.Worker do
     sumlist(t1, t2, [ %{:gpio_no => h1,:val => h2} | total])
   end
 
+  defp gpio_write_map(m) do
+    gpio_write(m[:gpio_no], m[:val])
+  end
   defp gpio_write(gpio_no, val) do
     {:ok, gpio} = GPIO.open(gpio_no, :output)
     GPIO.write(gpio, val)
@@ -90,15 +97,16 @@ defmodule Blink7segLed.Worker do
   # 4 digit 7 segment led
   ##########
 
-  defp blink_4digit_forever([], digit_gpio_no_list, count) do
+  defp blink_4digit_forever(digit_gpio_no_list, count) do
     blink_4digit_seq(digit_gpio_no_list, count)
     next_count = rem(count + 1, 4)
-    blink_4digit_forever([], digit_gpio_no_list, next_count)
+    blink_4digit_forever(digit_gpio_no_list, next_count)
   end
 
   defp blink_4digit_seq(digit_gpio_no_list, count) do
-    sumlist(digit_gpio_no_list, anode_4digit_7led_blink(count), [])
-    |> Enum.map(fn m -> gpio_write(m[:gpio_no], m[:val]) end)
+    digit_gpio_no_list
+    |> sumlist(anode_4digit_7led_blink(count), [])
+    |> Enum.map(fn m -> gpio_write_map(m) end)
 
     :timer.sleep(@digit_loop)
   end
