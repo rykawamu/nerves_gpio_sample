@@ -57,6 +57,10 @@ defmodule Countup4dig7seg.MixProject do
       {:nerves_system_rpi4, "~> 1.10", runtime: false, targets: :rpi4},
       {:nerves_system_bbb, "~> 2.5", runtime: false, targets: :bbb},
       {:nerves_system_x86_64, "~> 1.10", runtime: false, targets: :x86_64},
+
+      ## add led & gpio
+      {:nerves_leds, "~> 0.8", targets: @all_targets},
+      {:circuits_gpio, "~> 0.4", targets: @all_targets},
     ]
   end
 

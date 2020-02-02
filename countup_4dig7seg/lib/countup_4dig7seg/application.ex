@@ -33,6 +33,8 @@ defmodule Countup4dig7seg.Application do
       # Children for all targets except host
       # Starts a worker by calling: Countup4dig7seg.Worker.start_link(arg)
       # {Countup4dig7seg.Worker, arg},
+      {BlinkLed.Worker, []},
+      {Countup4dig7seg.Worker, []},
     ]
   end
 
